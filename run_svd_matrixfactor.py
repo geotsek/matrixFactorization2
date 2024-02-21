@@ -6,19 +6,15 @@ Created on Tue Feb 20 14:35:35 2024
 @author: georgios
 """
 
-import sys
-#sys.path.append('FastRP-master')
-
 import csv
 
-import array
 
 import numpy as np
-import scipy as sp
+#import scipy as sp
 from scipy.linalg import svd
 
 from scipy.sparse import csr_matrix
-from scipy.sparse import linalg as sla                                                           
+#from scipy.sparse import linalg as sla                                                           
 
 #from collections import Counter
 from collections import OrderedDict
@@ -28,7 +24,7 @@ def from_csv_to_csr(fp):
     
     edge_list = list()
     #load the csv file
-    with open(in_edges_csv, encoding='utf-8-sig', newline='') as f1:
+    with open(fp, encoding='utf-8-sig', newline='') as f1:
         reader1 = csv.reader(f1)
         edge_list = [tuple(row) for row in reader1]
         
@@ -80,13 +76,13 @@ if __name__ == '__main__':
     threshold = 0.95
 
     #A = from_csv_to_csr(in_edges_csv)
-    #A = from_csv_to_csr(in_edges_csv).todense()
+    A = from_csv_to_csr(in_edges_csv).todense()
     
     
     # Singular-value decomposition
 
     # define a matrix
-    A = np.array([[1, 2, 0 , 0], [3, 0, 0, 4], [0, 5, 0, 6]])   
+    #A = np.array([[1, 2, 0 , 0], [3, 0, 0, 4], [0, 5, 0, 6]])   
     print('A=',A)
     # SVD
     U, s, VT = svd(A)
@@ -118,5 +114,8 @@ if __name__ == '__main__':
     B[B<tiny]=0
     Asum = np.sum(A)
     ABabsdiff = np.sum(np.abs(A-B))
-    ABabsdiffrelative = ABabsdiff/Asum    
+    ABabsdiffrelative = ABabsdiff/Asum
+    
+    print('ABabsdiff=',ABabsdiff)
+    print('ABabsdiffrelative=',ABabsdiffrelative)
     
