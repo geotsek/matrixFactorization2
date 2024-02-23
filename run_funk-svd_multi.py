@@ -101,6 +101,8 @@ if __name__ == '__main__':
     #in_edges_csv = dataFolder + 'binetGeneDoidEdges_small.csv'
     in_edges_csv = dataFolder + 'binetGeneDoidEdges.csv'
 
+    out_data = dataFolder + 'data.txt'
+
     tiny = 1.e-10
     threshold = 0.95
 
@@ -114,25 +116,57 @@ if __name__ == '__main__':
     val = df.drop(train.index.tolist()).sample(frac=0.5, random_state=8)
     test = df.drop(train.index.tolist()).drop(val.index.tolist())
 
-    n_dims = pow(2,9)
-    print('n_dims=',n_dims)
-    svd = SVD(lr=0.001, reg=0.005, n_epochs=100, n_factors=n_dims, early_stopping=False,
+    #epochs
+    params = [pow(2,i) for i in range(0,10)]
+    #dims
+    #params = [pow(2,i) for i in range(0,10)]
+    
+    data_all = []
+    for ip in params:
+    
+        data = []
+        n_epochs = ip
+        #n_dims = ip
+        n_dims = 8
+        
+        svd = SVD(lr=0.001, reg=0.005, n_epochs=n_epochs, n_factors=n_dims, early_stopping=False,
           shuffle=False, min_rating=0, max_rating=1)
 
-    svd.fit(X=train, X_val=val)
+        svd.fit(X=train, X_val=val)
 
-    pred = svd.predict(test)
+        pred = svd.predict(test)
     
-    print('n_dims=',n_dims)
+        print('n_dims=',n_dims)
 
-    mae = mean_absolute_error(test['rating'], pred)
-    rmse = np.sqrt(mean_squared_error(test['rating'], pred))
-    print(f'Test MAE: {mae:.2f}')
-    print(f'Test RMSE= {rmse:.2f}')
+        mae = mean_absolute_error(test['rating'], pred)
+        rmse = np.sqrt(mean_squared_error(test['rating'], pred))
+        print(f'Test MAE: {mae:.2f}')
+        print(f'Test RMSE= {rmse:.2f}')
     
-    pred_round = [ round(elem, 0) for elem in pred ]
-    mae_round = mean_absolute_error(test['rating'], pred_round)
-    rmse_round = np.sqrt(mean_squared_error(test['rating'], pred_round))
-    print(f'Test MAE_round: {mae_round:.2f}')
-    print(f'Test RMSE_round= {rmse_round:.2f}')
+        pred_round = [ round(elem, 0) for elem in pred ]
+        mae_round = mean_absolute_error(test['rating'], pred_round)
+        rmse_round = np.sqrt(mean_squared_error(test['rating'], pred_round))
+        print(f'Test MAE_round: {mae_round:.2f}')
+        print(f'Test RMSE_round= {rmse_round:.2f}')
 
+        sum_test = sum(test['rating'])
+        sum_pred = sum(pred)
+        sum_pred_round = sum(pred_round)
+        print(f'Test MAE: {mae:.2f}')
+        
+        #data.append(n_dims)
+        data.append(ip)
+        data.append(sum_test)
+        data.append(sum_pred)
+        data.append(sum_pred_round)
+        data.append(mae)
+        data.append(rmse)
+        data.append(mae_round)
+        data.append(rmse_round)
+        
+        data_all.append(data)
+    
+    data_ar = np.array(data_all)
+    np.savetxt(out_data, data_ar)
+    
+    
