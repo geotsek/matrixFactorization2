@@ -1,6 +1,14 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+In this repo I put together python code to perform matrix factorization using funk-svd. funk-svd is a old famous matrix factorization method for recommender systems, and was specifically developed for the Netflix problem. 
+
+https://github.com/gbolmier/funk-svd
+
+I employ funk-svd for the non-square matrix of genes and diseases (doid = disease ontology id). The relevant data came from OMIM.
+
+https://www.omim.org/
+
+More details coming soon...
 
 ### What is this repository for? ###
 
